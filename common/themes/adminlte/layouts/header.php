@@ -226,6 +226,7 @@ use yii\helpers\Html;
                     </ul>
                 </li>
                 <!-- User Account: style can be found in dropdown.less -->
+                <!-- check login --!>
                 <?php
        if(Yii::$app->user->isGuest){
         //echo 'User is not logged!';
