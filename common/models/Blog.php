@@ -3,6 +3,9 @@
 namespace common\models;
 
 use Yii;
+use yii\db\Expression;
+use yii\behaviors\TimestampBehavior;
+use yii\behaviors\BlameableBehavior;
 
 /**
  * This is the model class for table "{{%blog}}".
@@ -19,6 +22,17 @@ use Yii;
  */
 class Blog extends \yii\db\ActiveRecord
 {
+
+    public function behaviors()
+    {
+        return [
+            BlameableBehavior::className(),
+            [
+                'class' => TimestampBehavior::className(),
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
     /**
      * {@inheritdoc}
      */
@@ -34,8 +48,8 @@ class Blog extends \yii\db\ActiveRecord
     {
         return [
             [['content'], 'string'],
-            [['category', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
-            [['title', 'tag'], 'string', 'max' => 255],
+            [['category', 'created_by', 'updated_by'], 'integer'],
+            [['title', 'tag', 'created_at', 'updated_at'], 'string', 'max' => 255],
         ];
     }
 
