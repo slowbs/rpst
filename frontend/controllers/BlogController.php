@@ -8,6 +8,8 @@ use frontend\models\BlogSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\ForbiddenHttpException;
+use yii\filters\AccessControl; //<<------ Use
 
 /**
  * BlogController implements the CRUD actions for Blog model.
@@ -26,6 +28,21 @@ class BlogController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            'access'=>[
+                'class'=>AccessControl::className(),
+                'rules'=>[
+                  [
+                    'allow'=>true,
+                    'actions'=>['index','view','create','update'],
+                    'roles'=>['Author']
+                  ],
+                  [
+                    'allow'=>true,
+                    'actions'=>['delete',],
+                    'roles'=>['Management'],
+                  ]
+                  ],
+              ]
         ];
     }
 
@@ -85,14 +102,19 @@ class BlogController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        if (\Yii::$app->user->can('updateBlog', ['model' => $model])) {
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
+        else{
+            return $this->render('update', [
+                'model' => $model,
+            ]);
+        }
+    }else{
+        throw new ForbiddenHttpException('fuck my life');
+        }
     }
 
     /**
