@@ -42,6 +42,10 @@ class BlogController extends Controller
                     'roles'=>['Management'],
                   ]
                   ],
+                  'denyCallback' => function ($rule, $action) {
+                    //throw new ForbiddenHttpException('fuck my life');
+                    Yii::$app->response->redirect(['/']); 
+                }
               ]
         ];
     }
