@@ -46,6 +46,7 @@ class RbacController extends \yii\console\Controller {
     $auth->addChild($author, $updateOwnPost);
 
     $auth->addChild($management, $author);
+    $auth->addChild($management, $updatePost);
     $auth->addChild($admin, $management);
 
     $auth->assign($admin, 2);

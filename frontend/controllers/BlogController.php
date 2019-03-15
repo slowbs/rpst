@@ -33,19 +33,26 @@ class BlogController extends Controller
                 'rules'=>[
                   [
                     'allow'=>true,
-                    'actions'=>['index','view','create','update'],
+                    'actions'=>['index','view','create'],
                     'roles'=>['Author']
                   ],
                   [
                     'allow'=>true,
-                    'actions'=>['delete',],
-                    'roles'=>['Management'],
-                  ]
+                    'actions'=>['update'],
+                    'roles'=>['Author'],
+                    'matchCallback'=>function($rule,$action){
+                      $model = $this->findModel(Yii::$app->request->get('id'));
+                      if (\Yii::$app->user->can('UpdateBlog',['model'=>$model])) {
+                               return true;
+                      }
+                    }
                   ],
-                  'denyCallback' => function ($rule, $action) {
-                    //throw new ForbiddenHttpException('fuck my life');
-                    Yii::$app->response->redirect(['/']); 
-                }
+                  [
+                    'allow'=>true,
+                    'actions'=>['delete'],
+                    'roles'=>['Admin']
+                  ]
+                ]
               ]
         ];
     }
@@ -106,19 +113,19 @@ class BlogController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        if (\Yii::$app->user->can('updateBlog', ['model' => $model])) {
+        //if (\Yii::$app->user->can('updateBlog', ['model' => $model])) {
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
-        else{
+        //else{
             return $this->render('update', [
                 'model' => $model,
             ]);
-        }
-    }else{
+        //}
+    /* }else{
         throw new ForbiddenHttpException('fuck my life');
-        }
+        } */
     }
 
     /**
