@@ -8,6 +8,7 @@ use backend\models\UserSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * ManageUserController implements the CRUD actions for User model.
@@ -20,6 +21,16 @@ class ManageUserController extends Controller
     public function behaviors()
     {
         return [
+            'access'=>[
+                'class'=>AccessControl::className(),
+                'rules'=>[
+                    [
+                        //'actions'=>['index','create','view','update','delete'],
+                        'roles'=>['ManageUser'],
+                        'allow'=>true
+                    ]
+                ]
+              ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
