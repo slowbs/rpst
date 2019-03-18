@@ -48,7 +48,8 @@ class SignupForm extends Model
             return null;
         }
         
-        $user = new User();
+        //$user = new User(); old Model without scenario
+        $user = new User(['scenario'=>'registration']); // <<<<------
         $user->username = $this->username;
         $user->email = $this->email;
         $user->setPassword($this->password);
